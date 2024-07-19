@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obituary Submission Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      margin: auto;
+      width: 50%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+  </style>
+  <script>
+    document.getElementById('obituaryForm').addEventListener('submit', function(event) {
+      let isValid = true;
+      const name = document.getElementById('name').value;
+      const dob = document.getElementById('dob').value;
+      const dod = document.getElementById('dod').value;
+      const content = document.getElementById('content').value;
+      const author = document.getElementById('author').value;
+
+      
+      if (name === '' || dob === '' || dod === '' || content === '' || author === '') {
+        isValid = false;
+        alert('All fields are required.');
+      }
+
+      
+      if (isValid) {
+        const dobDate = new Date(dob);
+        const dodDate = new Date(dod);
+        if (dobDate >= dodDate) {
+          isValid = false;
+          alert('Date of Death must be after Date of Birth.');
+        }
+      }
+
+      
+      if (isValid) {
+        
+        if (name.length < 2) {
+          isValid = false;
+          alert('Name must be at least 2 characters long.');
+        }
+
+        
+        if (content.length < 50) {
+          isValid = false;
+          alert('Content must be at least 50 characters long.');
+        }
+      }
+
+      if (!isValid) {
+        event.preventDefault();
+      }
+    });
+
+  </script>
+</head>
+<body>
+  <h1>Submit an Obituary</h1>
+  <form id="obituaryForm" method="POST">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required>
+
+    <label for="dod">Date of Death:</label>
+    <input type="date" id="dod" name="dod" required>
+
+    <label for="content">Content:</label>
+    <textarea id="content" name="content" rows="5" required></textarea>
+
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author" required>
+
+    <button type="submit">Submit</button>
+
+    {% if messages %}
+      {% for message in messages %}
+        <h2 style="color: #0ffd1b;">{{ message }}</h2>
+      {% endfor %}
+    {% endif %}
+  </form>
+</body>
+</html>
